@@ -1,0 +1,23 @@
+{
+    "name": "ocozzio/salsify-channel-connector",
+    "description": "Poll Salsify product channel for data made available to Ocozzio Middleware/API",
+    "type": "project",
+    "require": {
+        "guzzlehttp/guzzle": "^7.2"
+    },
+    "autoload":{
+        "psr-4": {
+            "App\\": "app/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "process-timeout": 0,
+        "sort-packages": true
+    }
+}
