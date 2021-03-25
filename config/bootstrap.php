@@ -1,8 +1,7 @@
 <?php
 
-use App\Services\ChannelGroper;
 use DI\ContainerBuilder;
-use GuzzleHttp\Client;
+use App\Data\SalsifyCredential;
 use Psr\Container\ContainerInterface;
 
 require_once __DIR__.'/../vendor/autoload.php';
@@ -12,17 +11,14 @@ $containerBuilder->addDefinitions([
     'settings' => function () {
         return require __DIR__.'/settings.php';
     },
+    SalsifyCredential::class => function (ContainerInterface $c) {
+        $settings = $c->get('settings');
 
-    ChannelGroper::class => function (ContainerInterface $container) {
-        $httpClient = new Client();
-
-        [
-            'token' => $token,
-            'orgId' => $orgId,
-            'channelId' => $channelId
-        ] = $container->get('settings');
-
-        return new ChannelGroper($httpClient, $token, $orgId, $channelId);
+        return new SalsifyCredential(
+            $settings['token'],
+            $settings['orgId'],
+            $settings['channelId'],
+        );
     }
 ]);
 
