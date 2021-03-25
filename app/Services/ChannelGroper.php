@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Psr\Http\Client\ClientInterface;
 use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Psr7\Request;
 
@@ -12,9 +13,9 @@ final class ChannelGroper
     private string $orgId;
     private string $channelId;
 
-    public function __construct(string $token, string $orgId, string $channelId)
+    public function __construct(ClientInterface $httpClient, string $token, string $orgId, string $channelId)
     {
-        $this->httpClient = new HttpClient();
+        $this->httpClient = $httpClient;
         $this->token = $token;
         $this->orgId = $orgId;
         $this->channelId = $channelId;
