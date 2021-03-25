@@ -3,7 +3,8 @@
     "description": "Poll Salsify product channel for data made available to Ocozzio Middleware/API",
     "type": "project",
     "require": {
-        "guzzlehttp/guzzle": "^7.2"
+        "guzzlehttp/guzzle": "^7.2",
+        "php-di/php-di": "^6.3"
     },
     "autoload":{
         "psr-4": {
