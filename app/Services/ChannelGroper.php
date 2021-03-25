@@ -2,19 +2,19 @@
 
 namespace App\Services;
 
+use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
-use Psr\Http\Client\ClientInterface;
 
 final class ChannelGroper
 {
-    private ClientInterface $httpClient;
+    private Client $httpClient;
     private string $token;
     private string $orgId;
     private string $channelId;
 
-    public function __construct(ClientInterface $httpClient, string $token, string $orgId, string $channelId)
+    public function __construct(string $token, string $orgId, string $channelId)
     {
-        $this->httpClient = $httpClient;
+        $this->httpClient = new Client();
         $this->token = $token;
         $this->orgId = $orgId;
         $this->channelId = $channelId;
@@ -22,7 +22,7 @@ final class ChannelGroper
 
     public function initiateChannelRun(): void
     {
-        new Request(
+        new $this->request(
             'POST',
             "https://app.salsify.com/api/orgs/$this->orgId/channels/$this->channelId/runs",
             ['Authorization' => "Bearer $this->token"]
@@ -39,7 +39,7 @@ final class ChannelGroper
         }
 
         $request = new Request('GET', $channelRunData->product_export_url);
-        $response = $this->httpClient->send($request);
+        $response = $this->httpClient->sendRequest($request);
         $stream = $response->getBody();
         $dataGenerator = function () use ($stream) {
             while (!$stream->eof()) {
@@ -57,7 +57,7 @@ final class ChannelGroper
             "https://app.salsify.com/api//channels/$this->channelId/runs/latest",
             ['Authorization' => "Bearer $this->token"]
         );
-        $response = $this->httpClient->send($request);
+        $response = $this->httpClient->sendRequest($request);
 
         return json_decode($response->getBody()->getContents());
     }
