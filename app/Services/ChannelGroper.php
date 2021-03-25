@@ -2,13 +2,12 @@
 
 namespace App\Services;
 
-use Psr\Http\Client\ClientInterface;
-use GuzzleHttp\Client as HttpClient;
 use GuzzleHttp\Psr7\Request;
+use Psr\Http\Client\ClientInterface;
 
 final class ChannelGroper
 {
-    private HttpClient $httpClient;
+    private ClientInterface $httpClient;
     private string $token;
     private string $orgId;
     private string $channelId;
