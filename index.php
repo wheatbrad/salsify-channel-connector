@@ -1,16 +1,9 @@
-<?php 
+<?php
 
 use App\Services\ChannelGroper;
 
-require_once __DIR__.'/vendor/autoload.php';
+$container = (require_once __DIR__.'/config/bootstrap.php')->build();
 
-[
-    'token' => $token,
-    'orgId' => $orgId,
-    'channelId' => $channelId
-] = (require __DIR__.'/config/settings.php');
-
-$channelGroper = new ChannelGroper($token, $orgId, $channelId);
+$channelGroper = $container->get(ChannelGroper::class);
 $channelGroper->initiateChannelRun();
 $dataStream = $channelGroper->getChannelData();
-
