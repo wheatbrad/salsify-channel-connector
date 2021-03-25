@@ -1,6 +1,7 @@
 .DS_Store
 Thumbs.db
 npm-debug.log
+notes.md
 
 /node_modules
 /vendor
