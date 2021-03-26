@@ -8,9 +8,7 @@ require_once __DIR__.'/../vendor/autoload.php';
 
 $containerBuilder = new ContainerBuilder();
 $containerBuilder->addDefinitions([
-    'settings' => function () {
-        return require __DIR__.'/settings.php';
-    },
+    'settings' => (require __DIR__.'/settings.php'),
     SalsifyCredential::class => function (ContainerInterface $c) {
         $settings = $c->get('settings');
 
