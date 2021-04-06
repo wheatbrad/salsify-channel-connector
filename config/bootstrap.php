@@ -20,4 +20,9 @@ $containerBuilder->addDefinitions([
     }
 ]);
 
+if (isset($_ENV['PRODUCTION'])) {
+    $containerBuilder->enableCompilation(__DIR__.'/../tmp');
+    $containerBuilder->writeProxiesToFile(true, __DIR__.'/../tmp/proxies');
+}
+
 return $containerBuilder;
