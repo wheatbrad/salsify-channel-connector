@@ -4,8 +4,10 @@ namespace App\Services;
 
 use App\Data\SalsifyCredential;
 use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Request;
 
+/**
+ * Service
+ */
 final class ChannelGroper
 {
     private Client $httpClient;
@@ -13,20 +15,22 @@ final class ChannelGroper
     private string $orgId;
     private string $channelId;
 
-    public function __construct(SalsifyCredential $credentials)
+    public function __construct(SalsifyCredential $credentials, Client $httpClient)
     {
-        $this->httpClient = new Client();
         $this->token = $credentials->getToken();
         $this->orgId = $credentials->getOrgId();
         $this->channelId = $credentials->getChannelId();
+        $this->httpClient = $httpClient;
     }
 
     public function initiateChannelRun(): void
     {
-        new Request(
+        $this->httpClient->request(
             'POST',
             "https://app.salsify.com/api/orgs/$this->orgId/channels/$this->channelId/runs",
-            ['Authorization' => "Bearer $this->token"]
+            [
+                'headers' => ['Authorization' => "Bearer $this->token"]
+            ]
         );
     }
 
@@ -39,8 +43,7 @@ final class ChannelGroper
             $channelRunData = $this->getChannelRunStatus();
         }
 
-        $request = new Request('GET', $channelRunData->product_export_url);
-        $response = $this->httpClient->sendRequest($request);
+        $response = $this->httpClient->request('GET', $channelRunData->product_export_url);
         $stream = $response->getBody();
         $dataGenerator = function () use ($stream) {
             while (!$stream->eof()) {
@@ -53,12 +56,13 @@ final class ChannelGroper
 
     private function getChannelRunStatus(): \stdClass
     {
-        $request = new Request(
+        $response = $this->httpClient->request(
             'GET',
-            "https://app.salsify.com/api//channels/$this->channelId/runs/latest",
-            ['Authorization' => "Bearer $this->token"]
+            "https://app.salsify.com/api/channels/$this->channelId/runs/latest",
+            [
+                'headers' => ['Authorization' => "Bearer $this->token"]
+            ]
         );
-        $response = $this->httpClient->sendRequest($request);
 
         return json_decode($response->getBody()->getContents());
     }
