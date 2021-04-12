@@ -23,22 +23,17 @@ final class ChannelGroper
         $this->httpClient = $httpClient;
     }
 
-    public function initiateChannelRun(): void
-    {
-        $this->httpClient->request(
-            'POST',
-            "https://app.salsify.com/api/orgs/$this->orgId/channels/$this->channelId/runs",
-            [
-                'headers' => ['Authorization' => "Bearer $this->token"]
-            ]
-        );
-    }
-
     public function getChannelData(): \Generator
     {
         $channelRunData = $this->getChannelRunStatus();
+        $lastRun = new \DateTime($channelRunData->ended_at);
         
-        while ($channelRunData->status === 'running') {
+        // If last channel run is older than 8 hrs, initiate a new run
+        if ($lastRun->diff(new \DateTime())->h > 8) {
+            $this->initiateChannelRun();
+        }
+        
+        while ($channelRunData->status !== 'completed') {
             sleep(2);
             $channelRunData = $this->getChannelRunStatus();
         }
@@ -52,6 +47,17 @@ final class ChannelGroper
         };
 
         return $dataGenerator();
+    }
+
+    private function initiateChannelRun(): void
+    {
+        $this->httpClient->request(
+            'POST',
+            "https://app.salsify.com/api/orgs/$this->orgId/channels/$this->channelId/runs",
+            [
+                'headers' => ['Authorization' => "Bearer $this->token"]
+            ]
+        );
     }
 
     private function getChannelRunStatus(): \stdClass
