@@ -6,7 +6,7 @@ use App\Data\SalsifyCredential;
 use GuzzleHttp\Client;
 
 /**
- * Service
+ * Service to interrogate channel metadata and stream output channel data. 
  */
 final class ChannelGroper
 {
@@ -23,6 +23,11 @@ final class ChannelGroper
         $this->httpClient = $httpClient;
     }
 
+    /**
+     * Stream dumped channel data from cloud storage. 
+     *
+     * @return \Generator
+     */
     public function getChannelData(): \Generator
     {
         $channelRunData = $this->getChannelRunStatus();
@@ -48,17 +53,31 @@ final class ChannelGroper
         return $dataGenerator();
     }
 
+    /**
+     * Determine, based on channel run metadata, if channel data
+     * dump should be run again. 
+     *
+     * @param string|null $endingTimestamp
+     * @return boolean
+     */
     private function mustInitiateChannelRun(?string $endingTimestamp): bool
     {
+        // Channel run had not previously been initiated
         if (is_null($endingTimestamp)) {
-            return false;
+            return true;
         }
 
         $lastRunEndedAt = new \DateTime($endingTimestamp);
         
-        return $lastRunEndedAt->diff(new \DateTime())->d > 1;
+        // Last run older than 20 hrs return true, otherwise false
+        return $lastRunEndedAt->diff(new \DateTime())->h > 20;
     }
 
+    /**
+     * POST request to endpoint to initiate channel data dump.
+     * 
+     * @return void
+     */
     private function initiateChannelRun(): void
     {
         $this->httpClient->request(
@@ -70,6 +89,11 @@ final class ChannelGroper
         );
     }
 
+    /**
+     * GET request to endpoint for channel data dump metadata.
+     * 
+     * @return \stdClass
+     */
     private function getChannelRunStatus(): \stdClass
     {
         $response = $this->httpClient->request(
