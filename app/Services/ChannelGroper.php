@@ -6,7 +6,7 @@ use App\Data\SalsifyCredential;
 use GuzzleHttp\Client;
 
 /**
- * Service to interrogate channel metadata and stream output channel data. 
+ * Service to interrogate channel metadata and stream output. 
  */
 final class ChannelGroper
 {
