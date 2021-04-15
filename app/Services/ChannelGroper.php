@@ -26,10 +26,8 @@ final class ChannelGroper
     public function getChannelData(): \Generator
     {
         $channelRunData = $this->getChannelRunStatus();
-        $lastRun = new \DateTime($channelRunData->ended_at);
         
-        // If last channel run is older than 8 hrs, initiate a new run
-        if ($lastRun->diff(new \DateTime())->h > 8) {
+        if ($this->mustInitiateChannelRun(@$channelRunData->ended_at)) {
             $this->initiateChannelRun();
         }
         
@@ -42,11 +40,23 @@ final class ChannelGroper
         $stream = $response->getBody();
         $dataGenerator = function () use ($stream) {
             while (!$stream->eof()) {
-                yield $stream->read(1024);
+                // 1 Megabyte chunk
+                yield $stream->read(1048576);
             }
         };
 
         return $dataGenerator();
+    }
+
+    private function mustInitiateChannelRun(?string $endingTimestamp): bool
+    {
+        if (is_null($endingTimestamp)) {
+            return false;
+        }
+
+        $lastRunEndedAt = new \DateTime($endingTimestamp);
+        
+        return $lastRunEndedAt->diff(new \DateTime())->d > 1;
     }
 
     private function initiateChannelRun(): void
