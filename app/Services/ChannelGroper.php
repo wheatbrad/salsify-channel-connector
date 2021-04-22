@@ -15,6 +15,9 @@ final class ChannelGroper
     private string $orgId;
     private string $channelId;
 
+    const CHUNK_SIZE = 1048576;
+    const NUM_HOURS = 20;
+
     public function __construct(SalsifyCredential $credentials, Client $httpClient)
     {
         $this->token = $credentials->getToken();
@@ -45,8 +48,7 @@ final class ChannelGroper
         $stream = $response->getBody();
         $dataGenerator = function () use ($stream) {
             while (!$stream->eof()) {
-                // 1 Megabyte chunk
-                yield $stream->read(1048576);
+                yield $stream->read(ChannelGroper::CHUNK_SIZE);
             }
         };
 
@@ -69,8 +71,7 @@ final class ChannelGroper
 
         $lastRunEndedAt = new \DateTime($endingTimestamp);
         
-        // Last run older than 20 hrs return true, otherwise false
-        return $lastRunEndedAt->diff(new \DateTime())->h > 20;
+        return $lastRunEndedAt->diff(new \DateTime())->h > ChannelGroper::NUM_HOURS;
     }
 
     /**
