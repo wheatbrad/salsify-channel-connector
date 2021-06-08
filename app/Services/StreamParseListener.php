@@ -7,12 +7,26 @@ use JsonStreamingParser\Listener\ListenerInterface;
 /**
  * Service to parse JSON streams. 
  */
-class StreamParseListener extends ListenerInterface
+class StreamParseListener implements ListenerInterface
 {
+
+    /**
+     * StreamParseListener implementation
+     * test URL: https://api.ocozzio.com/_testing/data.json
+     * 
+     * Need to determine which level in the dataset we are at, and 
+     * write the whole level into a table. (levels: header, attributes,
+     * attribute_values, digital_assets, products)
+     * 
+     * Write that whole level into a table with a transaction because
+     * we'll be overwriting data
+     */
+
+
     /**
      * @var string[]
      */
-    private array $keys;
+    public array $keys;
 
     public function startDocument(): void
     {
