@@ -3,7 +3,6 @@
 use DI\ContainerBuilder;
 use App\Data\SalsifyCredential;
 use Psr\Container\ContainerInterface;
-use PDO;
 
 require_once __DIR__.'/../vendor/autoload.php';
 
