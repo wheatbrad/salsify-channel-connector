@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Data\SalsifyCredential;
 use GuzzleHttp\Client;
+use Psr\Http\Message\StreamInterface;
 
 /**
  * Service to interrogate channel metadata and stream output. 
@@ -15,7 +16,6 @@ final class ChannelGroper
     private string $orgId;
     private string $channelId;
 
-    const CHUNK_SIZE = 1048576;
     const NUM_HOURS = 20;
 
     public function __construct(SalsifyCredential $credentials, Client $httpClient)
@@ -29,9 +29,9 @@ final class ChannelGroper
     /**
      * Stream dumped channel data from cloud storage. 
      *
-     * @return \Generator
+     * @return StreamInterface
      */
-    public function getChannelData(): \Generator
+    public function getChannelData(): StreamInterface
     {
         $channelRunData = $this->getChannelRunStatus();
         
@@ -45,14 +45,8 @@ final class ChannelGroper
         }
 
         $response = $this->httpClient->request('GET', $channelRunData->product_export_url);
-        $stream = $response->getBody();
-        $dataGenerator = function () use ($stream) {
-            while (!$stream->eof()) {
-                yield $stream->read(ChannelGroper::CHUNK_SIZE);
-            }
-        };
-
-        return $dataGenerator();
+        
+        return $response->getBody();
     }
 
     /**
