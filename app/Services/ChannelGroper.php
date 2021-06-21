@@ -29,9 +29,9 @@ final class ChannelGroper
     /**
      * Stream dumped channel data from cloud storage. 
      *
-     * @return StreamInterface
+     * @return resource file pointer resource to Salsify data
      */
-    public function getChannelData(): StreamInterface
+    public function getChannelData()
     {
         $channelRunData = $this->getChannelRunStatus();
         
@@ -44,9 +44,9 @@ final class ChannelGroper
             $channelRunData = $this->getChannelRunStatus();
         }
 
-        $response = $this->httpClient->request('GET', $channelRunData->product_export_url);
+        // $response = $this->httpClient->request('GET', $channelRunData->product_export_url);
         
-        return $response->getBody();
+        return fopen($channelRunData->product_export_url, 'r');
     }
 
     /**
