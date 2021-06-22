@@ -4,7 +4,7 @@ namespace App\Model;
 
 use PDO;
 
-final class HydrateModel
+final class RefreshModel
 {
     private PDO $pdo;
 
@@ -13,7 +13,7 @@ final class HydrateModel
         $this->pdo = $pdo;
     }
 
-    public function refreshAttributesTable(array $data): void
+    public function setAttributesTable(array $data): void
     {
         $this->pdo->beginTransaction();
         $this->pdo->query('DELETE FROM attributes');
@@ -46,7 +46,7 @@ final class HydrateModel
         $this->pdo->commit();
     }
 
-    public function refreshAttributeValuesTable(array $data): void
+    public function setAttributeValuesTable(array $data): void
     {
         $this->pdo->beginTransaction();
         $this->pdo->query('DELETE FROM attribute_values');
@@ -74,7 +74,7 @@ final class HydrateModel
         $this->pdo->commit();
     }
 
-    public function refreshDigitalAssetsTable(array $data): void
+    public function setDigitalAssetsTable(array $data): void
     {
         $this->pdo->beginTransaction();
         $this->pdo->query('DELETE FROM digital_assets');
@@ -115,7 +115,7 @@ final class HydrateModel
         $this->pdo->commit();
     }
 
-    public function refreshProductsTable(array $data): void
+    public function setProductsTable(array $data): void
     {
         $propsToIgnore = ['salsify:id','salsify:created_at','salsify:updated_at','salsify:version','salsify:profile_asset_id','salsify:system_id'];
 
