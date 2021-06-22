@@ -10,7 +10,7 @@ $channelGroper = $container->get(ChannelGroper::class);
 $dataStream = $channelGroper->getChannelData();
 
 try {
-    $parser = new Parser($dataStream, new ObjectListener());
+    $parser = new Parser($dataStream, $container->get(ObjectListener::class));
     $parser->parse();
 } catch (Exception $e) {
     fclose($dataStream);
