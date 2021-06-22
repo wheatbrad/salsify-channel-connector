@@ -16,7 +16,7 @@ final class ChannelGroper
     private string $orgId;
     private string $channelId;
 
-    const NUM_HOURS = 20;
+    private const NUM_HOURS = 2;
 
     public function __construct(SalsifyCredential $credentials, Client $httpClient)
     {
@@ -43,8 +43,6 @@ final class ChannelGroper
             sleep(2);
             $channelRunData = $this->getChannelRunStatus();
         }
-
-        // $response = $this->httpClient->request('GET', $channelRunData->product_export_url);
         
         return fopen($channelRunData->product_export_url, 'r');
     }
