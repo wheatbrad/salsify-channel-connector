@@ -16,6 +16,8 @@ class DigitalAssetsModel implements DatabaseSeedInterface
     public function seedData(array $data): void
     {
         $this->pdo->beginTransaction();
+        $this->pdo->query('DELETE from digital_assets');
+
         $stmt = $this->pdo->prepare('INSERT
             INTO digital_assets (
                 salsify_id,

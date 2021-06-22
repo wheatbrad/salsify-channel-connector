@@ -29,6 +29,9 @@ class ProductsModel implements DatabaseSeedInterface
     public function seedData(array $data): void
     {
         $this->pdo->beginTransaction();
+        $this->pdo->query('DELETE from product_meta');
+        $this->pdo->query('DELETE from products');
+
         $stmtMeta = $this->pdo->prepare('INSERT
             INTO product_meta (
                 salsify_id,

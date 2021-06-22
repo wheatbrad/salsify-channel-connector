@@ -16,6 +16,8 @@ class AttributeValuesModel implements DatabaseSeedInterface
     public function seedData(array $data): void
     {
         $this->pdo->beginTransaction();
+        $this->pdo->query('DELETE from attribute_values');
+        
         $stmt = $this->pdo->prepare('INSERT
             INTO attribute_values (
                 salsify_id,
