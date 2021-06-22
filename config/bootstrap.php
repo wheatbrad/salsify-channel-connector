@@ -2,6 +2,8 @@
 
 use DI\ContainerBuilder;
 use App\Data\SalsifyCredential;
+use App\Model\RefreshModel;
+use App\Services\ObjectListener;
 use Psr\Container\ContainerInterface;
 
 require_once __DIR__.'/../vendor/autoload.php';
@@ -32,6 +34,14 @@ $containerBuilder->addDefinitions([
         $dsn = "mysql:host=$host;dbname=$dbname;charset=$charset";
         
         return new PDO($dsn, $username, $password, $flags);
+    },
+
+    RefreshModel::class => function (ContainerInterface $c) {
+        return new RefreshModel($c->get(PDO::class));
+    },
+
+    ObjectListener::class => function (ContainerInterface $c) {
+        return new ObjectListener($c->get(RefreshModel::class));
     }
 ]);
 
