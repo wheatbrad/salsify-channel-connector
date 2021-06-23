@@ -72,10 +72,6 @@ class ObjectListener implements ListenerInterface
     public function startObject(): void
     {
         $this->increaseLevel();
-
-        if ($this->level === self::LEVEL_ATTRIBUTE) {
-            // need to start writing 
-        }
     }
     
     public function endObject(): void
@@ -85,6 +81,8 @@ class ObjectListener implements ListenerInterface
         if ($this->level === self::LEVEL_OBJECT) {
             // closing an object need to push into currentSection
             $this->currentSection[] = $this->currentObject;
+            // reset currentObject after pushing into section
+            $this->currentObject = [];
         }
     }
     
@@ -119,10 +117,12 @@ class ObjectListener implements ListenerInterface
             $this->reset();
         }
 
-        // if ($this->level === self::LEVEL_ATTRIBUTE) {
-        //     // we've just closed up an enumerated value
-        //     $this->currentObject[$this->currentKey] = implode(',', $this->enumeratedValues);
-        // }
+        if ($this->level === self::LEVEL_ATTRIBUTE) {
+            // we've just closed up an enumerated value
+            $this->currentObject[$this->currentKey] = implode(',', $this->enumeratedValues);
+            // reset enumerated values prop
+            $this->enumeratedValues = [];
+        }
     }
 
     public function key(string $key): void
