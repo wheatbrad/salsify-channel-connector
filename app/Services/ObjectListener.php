@@ -18,37 +18,12 @@ class ObjectListener implements ListenerInterface
 
     protected RefreshModel $refreshModel;
     
-    /**
-     * @var int|null will hold the current nesting level
-     */
     protected int $level;
-
-    /**
-     * @var string|null will hold current section heading
-     */
     protected string $currentSectionHeading;
-
-    /**
-     * @var array will hold the current section
-     */
-    protected $currentSection = [];
-
-    /**
-     * @var array will hold current object
-     */
-    protected $currentObject = [];
-
-    /**
-     * @var array will hold enumerated values
-     */
-    protected $enumeratedValues = [];
-
-    /**
-     * @var string|null will hold current key
-     */
+    protected array $currentSection = [];
+    protected array $currentObject = [];
+    protected array $enumeratedValues = [];
     protected string $currentKey;
-
-    protected float $startTime;
 
     public function __construct(RefreshModel $refreshModel)
     {
@@ -57,16 +32,12 @@ class ObjectListener implements ListenerInterface
 
     public function startDocument(): void
     {
-        $this->startTime = microtime(true);
         $this->level = 0;
-        echo 'Document parsing started...'.PHP_EOL;
     }
 
     public function endDocument(): void
     {
         $this->level = 0;
-        $timeToComplete = microtime(true) - $this->startTime;
-        echo "Document parsed in: $timeToComplete seconds";
     }
 
     public function startObject(): void
@@ -79,9 +50,9 @@ class ObjectListener implements ListenerInterface
         $this->decreaseLevel();
 
         if ($this->level === self::LEVEL_OBJECT) {
-            // closing an object need to push into currentSection
+            // closing an object need to push into current section
             $this->currentSection[] = $this->currentObject;
-            // reset currentObject after pushing into section
+            // reset current object after pushing into section
             $this->currentObject = [];
         }
     }
@@ -114,7 +85,9 @@ class ObjectListener implements ListenerInterface
                     break;
             }
 
-            $this->reset();
+            // reset respective class props
+            $this->currentSection = [];
+            $this->currentObject = [];
         }
 
         if ($this->level === self::LEVEL_ATTRIBUTE) {
@@ -140,7 +113,7 @@ class ObjectListener implements ListenerInterface
             $this->currentObject[$this->currentKey] = $value;
         }
         if ($this->level === self::LEVEL_ENUMERATED) {
-            // push into prop then when we detect close array implode
+            // these values joined into string @`this->endArray()` once all values collected
             $this->enumeratedValues[] = $value;
         }
     }
@@ -158,14 +131,5 @@ class ObjectListener implements ListenerInterface
     protected function decreaseLevel(): void
     {
         $this->level = --$this->level;
-    }
-
-    /**
-     * Reset all the compound values to default.
-     */
-    protected function reset(): void
-    {
-        $this->currentSection = [];
-        $this->currentObject = [];
     }
 }
