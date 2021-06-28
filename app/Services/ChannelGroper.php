@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Data\SalsifyCredential;
 use GuzzleHttp\Client;
-use Psr\Http\Message\StreamInterface;
 
 /**
  * Service to interrogate channel metadata and stream output. 
