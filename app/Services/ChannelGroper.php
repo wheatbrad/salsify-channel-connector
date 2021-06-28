@@ -15,7 +15,10 @@ final class ChannelGroper
     private string $orgId;
     private string $channelId;
 
-    private const NUM_HOURS = 2;
+    /**
+     * @var int Number of minutes to cache Salsify channel run
+     */
+    private const CHANNEL_EXPIRY = 30;
 
     public function __construct(SalsifyCredential $credentials, Client $httpClient)
     {
@@ -62,7 +65,7 @@ final class ChannelGroper
 
         $lastRunEndedAt = new \DateTime($endingTimestamp);
         
-        return $lastRunEndedAt->diff(new \DateTime())->h > ChannelGroper::NUM_HOURS;
+        return $lastRunEndedAt->diff(new \DateTime())->i > ChannelGroper::CHANNEL_EXPIRY;
     }
 
     /**
