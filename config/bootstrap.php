@@ -18,7 +18,7 @@ $containerBuilder->addDefinitions([
         return new SalsifyCredential(
             $settings['token'],
             $settings['orgId'],
-            $settings['channelId'],
+            $settings['channelId']
         );
     },
 
@@ -46,8 +46,7 @@ $containerBuilder->addDefinitions([
 ]);
 
 if (isset($_ENV['PRODUCTION'])) {
-    $containerBuilder->enableCompilation(__DIR__.'/../tmp');
-    $containerBuilder->writeProxiesToFile(true, __DIR__.'/../tmp/proxies');
+    $containerBuilder->enableCompilation(__DIR__.'/../var/cache');
 }
 
 return $containerBuilder;
