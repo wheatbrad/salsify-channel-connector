@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Model\FlattenEntityModel;
 use App\Model\RefreshModel;
 use JsonStreamingParser\Listener\ListenerInterface;
 
@@ -16,6 +17,7 @@ class ObjectListener implements ListenerInterface
     protected const LEVEL_ATTRIBUTE = 4;
     protected const LEVEL_ENUMERATED = 5;
 
+    protected FlattenEntityModel $flattenEntityModel;
     protected RefreshModel $refreshModel;
     
     protected int $level;
@@ -25,8 +27,9 @@ class ObjectListener implements ListenerInterface
     protected array $enumeratedValues = [];
     protected string $currentKey;
 
-    public function __construct(RefreshModel $refreshModel)
+    public function __construct(RefreshModel $refreshModel, FlattenEntityModel $flattenEntityModel)
     {
+        $this->flattenEntityModel = $flattenEntityModel;
         $this->refreshModel = $refreshModel;
     }
 
@@ -38,6 +41,9 @@ class ObjectListener implements ListenerInterface
     public function endDocument(): void
     {
         $this->level = 0;
+
+        // Persist flattened tables
+        $this->flattenEntityModel->flattenFaucets();
     }
 
     public function startObject(): void

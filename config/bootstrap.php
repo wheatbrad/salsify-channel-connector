@@ -2,6 +2,7 @@
 
 use DI\ContainerBuilder;
 use App\Data\SalsifyCredential;
+use App\Model\FlattenEntityModel;
 use App\Model\RefreshModel;
 use App\Services\ObjectListener;
 use Psr\Container\ContainerInterface;
@@ -36,12 +37,19 @@ $containerBuilder->addDefinitions([
         return new PDO($dsn, $username, $password, $flags);
     },
 
+    FlattenEntityModel::class => function (ContainerInterface $c) {
+        return new FlattenEntityModel($c->get(PDO::class));
+    },
+
     RefreshModel::class => function (ContainerInterface $c) {
         return new RefreshModel($c->get(PDO::class));
     },
 
     ObjectListener::class => function (ContainerInterface $c) {
-        return new ObjectListener($c->get(RefreshModel::class));
+        return new ObjectListener(
+            $c->get(RefreshModel::class),
+            $c->get(FlattenEntityModel::class)
+        );
     }
 ]);
 
