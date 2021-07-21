@@ -14,13 +14,13 @@ $containerBuilder->addDefinitions([
     'settings' => (require __DIR__.'/settings.php'),
 
     SalsifyCredential::class => function (ContainerInterface $c) {
-        $settings = $c->get('settings');
+        [
+            'token' => $token,
+            'orgId' => $orgId,
+            'channelId' => $channelId
+        ] = $c->get('settings');
 
-        return new SalsifyCredential(
-            $settings['token'],
-            $settings['orgId'],
-            $settings['channelId']
-        );
+        return new SalsifyCredential($token, $orgId, $channelId);
     },
 
     PDO::class => function (ContainerInterface $c) {
@@ -52,9 +52,5 @@ $containerBuilder->addDefinitions([
         );
     }
 ]);
-
-if (isset($_ENV['PRODUCTION'])) {
-    $containerBuilder->enableCompilation(__DIR__.'/../var/cache');
-}
 
 return $containerBuilder;
