@@ -24,7 +24,7 @@ final class FlattenEntityModel
      * Finish                       finish
      * HWW Model #                  model_number
      */
-
+    
     public function flattenFaucets(): void
     {
         $this->pdo->query('CREATE TEMPORARY TABLE tmp_faucets SELECT salsify_id FROM products WHERE attribute = \'Product Group\' AND attribute_value = \'Faucets\'');
@@ -58,7 +58,7 @@ final class FlattenEntityModel
             (SELECT attribute_value FROM products WHERE products.salsify_id = tmp_faucets.salsify_id AND attribute = \'Bullet Points\'),
             (SELECT attribute_value FROM products WHERE products.salsify_id = tmp_faucets.salsify_id AND attribute = \'Faucet Installation Type\'),
             (SELECT attribute_value FROM products WHERE products.salsify_id = tmp_faucets.salsify_id AND attribute = \'Cartridge\'),
-            (SELECT attribute_value FROM products WHERE products.salsify_id = tmp_faucets.salsify_id AND attribute = \'Flow Rate\'),
+            (SELECT attribute_value FROM products WHERE products.salsify_id = tmp_faucets.salsify_id AND attribute = \'Flow Rate (GPM|LPM)\'),
             (SELECT attribute_value FROM products WHERE products.salsify_id = tmp_faucets.salsify_id AND attribute = \'Finish\'),
             (SELECT attribute_value FROM products WHERE products.salsify_id = tmp_faucets.salsify_id AND attribute = \'HWW Model #\')
             FROM tmp_faucets');
