@@ -31,36 +31,55 @@ final class FlattenEntityModel
         $this->pdo->query('DROP TABLE IF EXISTS faucets');
         $this->pdo->query('CREATE TABLE faucets (
             `salsify_id` varchar(60) NOT NULL,
-            `description` varchar(2000) DEFAULT NULL,
-            `features` varchar(2000) DEFAULT NULL,
+            `retailer` varchar(80) DEFAULT NULL,
+            `brand` varchar(80) DEFAULT NULL,
+            `group` varchar(80) DEFAULT NULL,
+            `sub_group` varchar(80) DEFAULT NULL,
+            `description` varchar(500) DEFAULT NULL,
+            `features` varchar(1800) DEFAULT NULL,
             `installation` varchar(191) DEFAULT NULL,
             `cartridge` varchar(191) DEFAULT NULL,
             `flow_rate` varchar(191) DEFAULT NULL,
             `finish` varchar(191) DEFAULT NULL,
             `model_number` varchar(191) DEFAULT NULL,
+            `upc` varchar(80) DEFAULT NULL,
             KEY `salsify_id` (`salsify_id`),
+            KEY `retailer` (`retailer`),
+            KEY `brand` (`brand`),
+            KEY `group` (`group`),
+            KEY `sub_group` (`sub_group`),
             KEY `cartridge` (`cartridge`),
             KEY `flow_rate` (`flow_rate`),
             KEY `finish` (`finish`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4');
         $this->pdo->query('INSERT INTO faucets (
                 `salsify_id`,
+                `retailer`,
+                `brand`,
+                `group`,
+                `sub_group`,
                 `description`,
                 `features`,
                 `installation`,
                 `cartridge`,
                 `flow_rate`,
                 `finish`,
-                `model_number`
+                `model_number`,
+                `upc`
             )
             SELECT salsify_id,
+            (SELECT attribute_value FROM products WHERE products.salsify_id = tmp_faucets.salsify_id AND attribute = \'Retailer\'),
+            (SELECT attribute_value FROM products WHERE products.salsify_id = tmp_faucets.salsify_id AND attribute = \'Brand\'),
+            (SELECT attribute_value FROM products WHERE products.salsify_id = tmp_faucets.salsify_id AND attribute = \'Product Sub-Group\'),
+            (SELECT attribute_value FROM products WHERE products.salsify_id = tmp_faucets.salsify_id AND attribute = \'Product Sub-Sub-Group\'),
             (SELECT attribute_value FROM products WHERE products.salsify_id = tmp_faucets.salsify_id AND attribute = \'Product Name\'),
             (SELECT attribute_value FROM products WHERE products.salsify_id = tmp_faucets.salsify_id AND attribute = \'Bullet Points\'),
             (SELECT attribute_value FROM products WHERE products.salsify_id = tmp_faucets.salsify_id AND attribute = \'Faucet Installation Type\'),
             (SELECT attribute_value FROM products WHERE products.salsify_id = tmp_faucets.salsify_id AND attribute = \'Cartridge\'),
             (SELECT attribute_value FROM products WHERE products.salsify_id = tmp_faucets.salsify_id AND attribute = \'Flow Rate (GPM|LPM)\'),
             (SELECT attribute_value FROM products WHERE products.salsify_id = tmp_faucets.salsify_id AND attribute = \'Finish\'),
-            (SELECT attribute_value FROM products WHERE products.salsify_id = tmp_faucets.salsify_id AND attribute = \'HWW Model #\')
+            (SELECT attribute_value FROM products WHERE products.salsify_id = tmp_faucets.salsify_id AND attribute = \'HWW Model #\'),
+            (SELECT attribute_value FROM products WHERE products.salsify_id = tmp_faucets.salsify_id AND attribute = \'UPC\')
             FROM tmp_faucets');
         $this->pdo->query('DROP TEMPORARY TABLE tmp_faucets');
     }
