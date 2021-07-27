@@ -43,7 +43,6 @@ final class FlattenEntityModel
             `finish` varchar(191) DEFAULT NULL,
             `model_number` varchar(191) DEFAULT NULL,
             `upc` varchar(80) DEFAULT NULL,
-            `salsify_url` varchar(191) DEFAULT NULL,
             `image_filename` varchar(191) DEFAULT NULL,
             KEY `salsify_id` (`salsify_id`),
             KEY `retailer` (`retailer`),
@@ -68,7 +67,6 @@ final class FlattenEntityModel
                 `finish`,
                 `model_number`,
                 `upc`,
-                `salsify_url`,
                 `image_filename`
             )
             SELECT salsify_id,
@@ -84,7 +82,6 @@ final class FlattenEntityModel
             (SELECT attribute_value FROM products WHERE products.salsify_id = tmp_faucets.salsify_id AND attribute = \'Finish\'),
             (SELECT attribute_value FROM products WHERE products.salsify_id = tmp_faucets.salsify_id AND attribute = \'HWW Model #\'),
             (SELECT attribute_value FROM products WHERE products.salsify_id = tmp_faucets.salsify_id AND attribute = \'UPC\'),
-            (SELECT salsify_url FROM digital_assets WHERE salsify_id = (SELECT attribute_value FROM products WHERE products.salsify_id = tmp_faucets.salsify_id AND attribute = \'Hero Image 1\')),
             (SELECT salsify_filename FROM digital_assets WHERE salsify_id = (SELECT attribute_value FROM products WHERE products.salsify_id = tmp_faucets.salsify_id AND attribute = \'Hero Image 1\'))
             FROM tmp_faucets');
         $this->pdo->query('DROP TEMPORARY TABLE tmp_faucets');
