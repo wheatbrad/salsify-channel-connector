@@ -36,7 +36,7 @@ final class FlattenEntityModel
             `group` varchar(80) DEFAULT NULL,
             `sub_group` varchar(80) DEFAULT NULL,
             `description` varchar(500) DEFAULT NULL,
-            `features` varchar(1800) DEFAULT NULL,
+            `features` varchar(2500) DEFAULT NULL,
             `installation` varchar(191) DEFAULT NULL,
             `cartridge` varchar(191) DEFAULT NULL,
             `flow_rate` varchar(191) DEFAULT NULL,
