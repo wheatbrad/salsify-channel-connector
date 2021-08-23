@@ -98,7 +98,7 @@ class ObjectListener implements ListenerInterface
 
         if ($this->level === self::LEVEL_ATTRIBUTE) {
             // we've just closed up an enumerated value
-            $this->currentObject[$this->currentKey] = serialize($this->enumeratedValues);
+            $this->currentObject[$this->currentKey] = json_encode($this->enumeratedValues);
             // reset enumerated values prop
             $this->enumeratedValues = [];
         }
